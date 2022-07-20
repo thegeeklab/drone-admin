@@ -12,7 +12,7 @@ import (
 	"golang.org/x/oauth2"
 )
 
-func New(server string, token string) (drone.Client, error) {
+func New(server, token string) (drone.Client, error) {
 	s, err := url.Parse(server)
 	if err != nil {
 		return nil, err
