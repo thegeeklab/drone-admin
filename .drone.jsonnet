@@ -317,7 +317,7 @@ local PipelineNotifications = {
     },
     {
       name: 'matrix',
-      image: 'thegeeklab/drone-admin',
+      image: 'thegeeklab/drone-matrix',
       settings: {
         homeserver: { from_secret: 'matrix_homeserver' },
         roomid: { from_secret: 'matrix_roomid' },

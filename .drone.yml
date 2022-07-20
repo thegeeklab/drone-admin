@@ -424,7 +424,7 @@ steps:
         - success
 
   - name: matrix
-    image: thegeeklab/drone-admin
+    image: thegeeklab/drone-matrix
     settings:
       homeserver:
         from_secret: matrix_homeserver
@@ -453,6 +453,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 4728bfefecfc36514732adbbf2404791d7bba9f78c6dfb0d21c77acac08d6361
+hmac: 4e6ae925635b2ffe1bc49fafed7bdc497ff65c09f46c07665745ca4edbfb15f2
 
 ...
