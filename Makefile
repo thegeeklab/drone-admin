@@ -69,7 +69,7 @@ test:
 build: $(DIST)/$(EXECUTABLE)
 
 $(DIST)/$(EXECUTABLE): $(SOURCES)
-	$(GO) build -v -tags '$(TAGS)' -ldflags '-extldflags "-static" $(LDFLAGS)' -o $@ ./admin
+	$(GO) build -v -tags '$(TAGS)' -ldflags '-extldflags "-static" $(LDFLAGS)' -o $@ ./cmd/$(EXECUTABLE)
 
 $(DIST_DIRS):
 	mkdir -p $(DIST_DIRS)
