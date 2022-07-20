@@ -29,20 +29,20 @@ func New(server string, token string) (drone.Client, error) {
 	}
 
 	oauth := new(oauth2.Config)
-	auther := oauth.Client(
+	authenticator := oauth.Client(
 		context.Background(),
 		&oauth2.Token{
 			AccessToken: token,
 		},
 	)
 
-	auther.Timeout, _ = time.ParseDuration("60s")
+	authenticator.Timeout, _ = time.ParseDuration("60s")
 
-	trans, _ := auther.Transport.(*oauth2.Transport)
+	trans, _ := authenticator.Transport.(*oauth2.Transport)
 	trans.Base = &http.Transport{
 		TLSClientConfig: tlsConfig,
 		Proxy:           http.ProxyFromEnvironment,
 	}
 
-	return drone.NewClient(s.String(), auther), nil
+	return drone.NewClient(s.String(), authenticator), nil
 }
