@@ -54,10 +54,7 @@ branches:
           - continuous-integration/drone/pr
       enforce_admins: true
       required_linear_history: true
-      restrictions:
-        apps: []
-        users: []
-        teams: []
+      restrictions: null
   - name: docs
     protection:
       required_pull_request_reviews: null
