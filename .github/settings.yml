@@ -58,7 +58,7 @@ branches:
     protection:
       required_pull_request_reviews: null
       required_status_checks: null
-      enforce_admins: true
+      enforce_admins: false
       restrictions:
         users: []
         teams:
