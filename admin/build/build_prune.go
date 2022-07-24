@@ -29,17 +29,11 @@ var buidPruneCmd = cli.Command{
 			EnvVars: []string{"DRONE_ADMIN_BUILD_PRUNE_KEEP_MIN"},
 			Value:   10,
 		},
-		&cli.BoolFlag{
-			Name:    "dry-run",
-			Usage:   "disable api calls",
-			EnvVars: []string{"DRONE_ADMIN_BUILD_PRUNE_DRY_RUN"},
-			Value:   false,
-		},
 	},
 }
 
 func buidPrune(c *cli.Context) error {
-	client, err := client.New(c.String("server"), c.String("token"))
+	client, err := client.New(c.StringSlice("server")[0], c.String("token"))
 	if err != nil {
 		return err
 	}

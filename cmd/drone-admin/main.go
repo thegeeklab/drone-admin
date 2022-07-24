@@ -8,6 +8,7 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
+	"github.com/thegeeklab/drone-admin/admin/autoscaler"
 	"github.com/thegeeklab/drone-admin/admin/build"
 	"github.com/urfave/cli/v2"
 )
@@ -41,16 +42,21 @@ func main() {
 				Name:     "token",
 				Aliases:  []string{"t"},
 				Usage:    "server auth token",
-				EnvVars:  []string{"DRONE_ADMIN_TOKEN"},
+				EnvVars:  []string{"DRONE_ADMIN_TOKEN", "DRONE_TOKEN"},
 				Required: true,
 			},
-
-			&cli.StringFlag{
+			&cli.StringSliceFlag{
 				Name:     "server",
 				Aliases:  []string{"s"},
 				Usage:    "server address",
-				EnvVars:  []string{"DRONE_ADMIN_SERVER"},
+				EnvVars:  []string{"DRONE_ADMIN_SERVER", "DRONE_SERVER"},
 				Required: true,
+			},
+			&cli.BoolFlag{
+				Name:    "dry-run",
+				Usage:   "disable none-read api calls",
+				EnvVars: []string{"DRONE_ADMIN_DRY_RUN"},
+				Value:   false,
 			},
 		},
 		Before: func(ctx *cli.Context) error {
@@ -64,6 +70,7 @@ func main() {
 		},
 		Commands: []*cli.Command{
 			build.Command,
+			autoscaler.Command,
 		},
 	}
 

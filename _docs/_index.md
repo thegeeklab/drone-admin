@@ -48,16 +48,18 @@ USAGE:
    drone-admin [global options] command [command options] [arguments...]
 
 VERSION:
-   4039a9c
+   00d2c63
 
 COMMANDS:
-   build    manage builds
-   help, h  Shows a list of commands or help for one command
+   build       manage build
+   autoscaler  manage autoscaler
+   help, h     Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:
+   --dry-run                 disable api calls (default: false) [$DRONE_ADMIN_DRY_RUN]
    --help, -h                show help (default: false)
    --log-level value         log level (default: "info") [$DRONE_ADMIN_LOG_LEVEL]
-   --server value, -s value  server address [$DRONE_ADMIN_SERVER]
+   --server value, -s value  server address  (accepts multiple inputs) [$DRONE_ADMIN_SERVER]
    --token value, -t value   server auth token [$DRONE_ADMIN_TOKEN]
    --version, -v             print the version (default: false)
 ```
@@ -72,4 +74,14 @@ INFO[0001] prune builds older than 720h, keep min 10
 INFO[0001] skip 'example/repo_1', number of 9 builds lower than min value
 INFO[0002] prune 1/105 builds from 'example/demo'
 INFO[0002] prune 0/56 builds from 'example/cool_project'
+```
+
+### Cleanup autoscaler agents
+
+When using the autoscaler, sometimes agents remain in the error state in the DB (even if the Drone CI reaper is enabled). This command will retry destroying agents in error state 2 times and force destroy them on the third retry. For this command, the `--server` flag need to be set to the autoscaler server address.
+
+```Shell
+drone-admin --token my-secret-token --server https://drone-scaler.excample.com autoscaler reaper
+INFO[0000] lookup agents in error state                  error=1 ok=1 server="https://drone-scaler.excample.com"
+INFO[0000] destroy agent                                 agent=agent-G8hHyA0A force=false server="https://drone-scaler.excample.com" triage=1
 ```
