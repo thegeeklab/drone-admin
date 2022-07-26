@@ -78,7 +78,7 @@ INFO[0002] prune 0/56 builds from 'example/cool_project'
 
 ### Cleanup autoscaler agents
 
-When using the autoscaler, sometimes agents remain in the error state in the DB (even if the Drone CI reaper is enabled). This command will retry destroying agents in error state 2 times and force destroy them on the third retry. For this command, the `--server` flag need to be set to the autoscaler server address.
+When using the autoscaler, agents sometimes remain in error state in the DB (even if the Drone CI Reaper is enabled). This command tries the destroy agents in error state two times and forces it on the third attempt. For this command the `--server` flag must be set to the address of the autoscaler server(s).
 
 ```Shell
 drone-admin --token my-secret-token --server https://drone-scaler.excample.com autoscaler reaper
