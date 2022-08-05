@@ -1,6 +1,6 @@
 module github.com/thegeeklab/drone-admin
 
-go 1.18
+go 1.19
 
 require (
 	github.com/drone/drone-go v1.7.1
