@@ -20,8 +20,13 @@ XGO_PACKAGE ?= src.techknowlogick.com/xgo@latest
 
 GENERATE ?=
 XGO_VERSION := go-1.19.x
-XGO_TARGETS ?= linux/amd64,linux/arm64
+XGO_TARGETS ?= linux/amd64,linux/arm64,linux/arm-6,linux/arm-7
 
+TARGETOS ?= linux
+TARGETARCH ?= amd64
+ifneq ("$(TARGETVARIANT)","")
+GOARM ?= $(subst v,,$(TARGETVARIANT))
+endif
 TAGS ?= netgo
 
 ifndef VERSION
@@ -69,14 +74,14 @@ test:
 build: $(DIST)/$(EXECUTABLE)
 
 $(DIST)/$(EXECUTABLE): $(SOURCES)
-	$(GO) build -v -tags '$(TAGS)' -ldflags '-extldflags "-static" $(LDFLAGS)' -o $@ ./cmd/$(EXECUTABLE)
+	GOOS=${TARGETOS} GOARCH=${TARGETARCH} GOARM=$(GOARM) $(GO) build -v -tags '$(TAGS)' -ldflags '-extldflags "-static" $(LDFLAGS)' -o $@ ./cmd/$(EXECUTABLE)
 
 $(DIST_DIRS):
 	mkdir -p $(DIST_DIRS)
 
 .PHONY: xgo
 xgo: | $(DIST_DIRS)
-	$(GO) run $(XGO_PACKAGE) -go $(XGO_VERSION) -v -ldflags '-extldflags "-static" $(LDFLAGS)' -tags '$(TAGS)' -targets '$(XGO_TARGETS)' -out $(EXECUTABLE) --pkg cmd/$(EXECUTABLE) .
+	GOOS=${TARGETOS} GOARCH=${TARGETARCH} GOARM=$(GOARM) $(GO) run $(XGO_PACKAGE) -go $(XGO_VERSION) -v -ldflags '-extldflags "-static" $(LDFLAGS)' -tags '$(TAGS)' -targets '$(XGO_TARGETS)' -out $(EXECUTABLE) --pkg cmd/$(EXECUTABLE) .
 	cp /build/* $(CWD)/$(DIST)
 	ls -l $(CWD)/$(DIST)
 
