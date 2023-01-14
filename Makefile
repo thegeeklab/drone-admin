@@ -74,14 +74,14 @@ test:
 build: $(DIST)/$(EXECUTABLE)
 
 $(DIST)/$(EXECUTABLE): $(SOURCES)
-	GOOS=${TARGETOS} GOARCH=${TARGETARCH} GOARM=$(GOARM) $(GO) build -v -tags '$(TAGS)' -ldflags '-extldflags "-static" $(LDFLAGS)' -o $@ ./cmd/$(EXECUTABLE)
+	GOOS=$(TARGETOS) GOARCH=$(TARGETARCH) GOARM=$(GOARM) $(GO) build -v -tags '$(TAGS)' -ldflags '-extldflags "-static" $(LDFLAGS)' -o $@ ./cmd/$(EXECUTABLE)
 
 $(DIST_DIRS):
 	mkdir -p $(DIST_DIRS)
 
 .PHONY: xgo
 xgo: | $(DIST_DIRS)
-	GOOS=${TARGETOS} GOARCH=${TARGETARCH} GOARM=$(GOARM) $(GO) run $(XGO_PACKAGE) -go $(XGO_VERSION) -v -ldflags '-extldflags "-static" $(LDFLAGS)' -tags '$(TAGS)' -targets '$(XGO_TARGETS)' -out $(EXECUTABLE) --pkg cmd/$(EXECUTABLE) .
+	GOOS=$(TARGETOS) GOARCH=$(TARGETARCH) GOARM=$(GOARM) $(GO) run $(XGO_PACKAGE) -go $(XGO_VERSION) -v -ldflags '-extldflags "-static" $(LDFLAGS)' -tags '$(TAGS)' -targets '$(XGO_TARGETS)' -out $(EXECUTABLE) --pkg cmd/$(EXECUTABLE) .
 	cp /build/* $(CWD)/$(DIST)
 	ls -l $(CWD)/$(DIST)
 
