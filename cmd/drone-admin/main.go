@@ -13,6 +13,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+//nolint:gochecknoglobals
 var (
 	BuildVersion = "devel"
 	BuildDate    = "00000000"
@@ -69,8 +70,8 @@ func main() {
 			return nil
 		},
 		Commands: []*cli.Command{
-			build.Command,
-			autoscaler.Command,
+			build.GetBuildCmd(),
+			autoscaler.GetAutoscalerCmd(),
 		},
 	}
 
