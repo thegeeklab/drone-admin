@@ -11,24 +11,28 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-var autoscalerReaperCmd = cli.Command{
-	Name:   "reaper",
-	Usage:  "find and kill agents in error state",
-	Action: autoscalerReaper,
-	Flags: []cli.Flag{
-		&cli.StringFlag{
-			Name:    "state-file",
-			Usage:   "state file",
-			EnvVars: []string{"DRONE_ADMIN_AUTOSCALER_REAPER_STATE_FILE"},
-			Value:   "/tmp/droneclean.gob",
+func getReaperCmd() *cli.Command {
+	return &cli.Command{
+		Name:   "reaper",
+		Usage:  "find and kill agents in error state",
+		Action: reaper,
+		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:    "state-file",
+				Usage:   "state file",
+				EnvVars: []string{"DRONE_ADMIN_AUTOSCALER_REAPER_STATE_FILE"},
+				Value:   "/tmp/droneclean.gob",
+			},
 		},
-	},
+	}
 }
 
-func autoscalerReaper(c *cli.Context) error {
-	statefile := c.String("state-file")
-	scaler := c.StringSlice("server")
-	dry := c.Bool("dry-run")
+func reaper(ctx *cli.Context) error {
+	const maxRetries = 3
+
+	statefile := ctx.String("state-file")
+	scaler := ctx.StringSlice("server")
+	dry := ctx.Bool("dry-run")
 	state := map[string]int{}
 	force := false
 
@@ -44,7 +48,7 @@ func autoscalerReaper(c *cli.Context) error {
 	}
 
 	for _, scaler := range scaler {
-		client, err := client.New(scaler, c.String("token"))
+		client, err := client.New(scaler, ctx.String("token"))
 		if err != nil {
 			return err
 		}
@@ -53,6 +57,7 @@ func autoscalerReaper(c *cli.Context) error {
 		if err != nil {
 			return err
 		}
+
 		serversAll := len(servers)
 		servers = util.Filter(servers, func(s *drone.Server) bool {
 			return s.State == "running"
@@ -65,25 +70,26 @@ func autoscalerReaper(c *cli.Context) error {
 		}
 		logrus.WithFields(searchFields).Infof("lookup agents in error state")
 
-		for _, s := range servers {
-			state[s.Name]++
-			triage := state[s.Name]
+		for _, server := range servers {
+			state[server.Name]++
+			triage := state[server.Name]
 
-			if state[s.Name] == 3 {
+			if state[server.Name] == maxRetries {
 				force = true
-				delete(state, s.Name)
 
+				delete(state, server.Name)
 			}
 
 			foundFields := logrus.Fields{
 				"server": scaler,
-				"agent":  s.Name,
+				"agent":  server.Name,
 				"triage": triage,
 				"force":  force,
 			}
 			logrus.WithFields(foundFields).Infof("destroy agent")
+
 			if !dry {
-				err = serverDestroy(client, s.Name, force)
+				err = serverDestroy(client, server.Name, force)
 				if err != nil && !strings.Contains(err.Error(), "client error 404") {
 					return err
 				}

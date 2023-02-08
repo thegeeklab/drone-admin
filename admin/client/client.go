@@ -13,12 +13,13 @@ import (
 )
 
 func New(server, token string) (drone.Client, error) {
-	s, err := url.Parse(server)
+	serverURL, err := url.Parse(server)
 	if err != nil {
 		return nil, err
 	}
-	if len(s.Scheme) == 0 {
-		s.Scheme = "http"
+
+	if len(serverURL.Scheme) == 0 {
+		serverURL.Scheme = "http"
 	}
 
 	// attempt to find system CA certs
@@ -26,6 +27,7 @@ func New(server, token string) (drone.Client, error) {
 	tlsConfig := &tls.Config{
 		RootCAs:            certs,
 		InsecureSkipVerify: false,
+		MinVersion:         tls.VersionTLS12,
 	}
 
 	oauth := new(oauth2.Config)
@@ -44,5 +46,5 @@ func New(server, token string) (drone.Client, error) {
 		Proxy:           http.ProxyFromEnvironment,
 	}
 
-	return drone.NewClient(s.String(), authenticator), nil
+	return drone.NewClient(serverURL.String(), authenticator), nil
 }
