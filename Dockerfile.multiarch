@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM golang:1.20@sha256:02d4d8887131f2fea51bb380835917bd605dc2af1ac4ff90012fdaecf87fe10c as build
+FROM --platform=$BUILDPLATFORM golang:1.20@sha256:77df3d8c2c4fce5cd302bd9351feb719d71286a01bd26176f5f6f78ad94ae46b as build
 
 ARG TARGETOS
 ARG TARGETARCH
