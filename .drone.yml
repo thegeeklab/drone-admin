@@ -145,22 +145,23 @@ steps:
       - dryrun
 
   - name: publish-quay
-    image: thegeeklab/drone-docker-buildx:23
+    image: thegeeklab/drone-docker-buildx:latest
     settings:
       auto_tag: true
       dockerfile: Dockerfile.multiarch
-      password:
-        from_secret: quay_password
       platforms:
         - linux/amd64
         - linux/arm64
         - linux/arm/v7
         - linux/arm/v6
       provenance: false
-      registry: quay.io
+      registries:
+        - password:
+            from_secret: quay_password
+          registry: quay.io
+          username:
+            from_secret: quay_username
       repo: quay.io/thegeeklab/${DRONE_REPO_NAME}
-      username:
-        from_secret: quay_username
     when:
       ref:
         - refs/heads/main
@@ -292,6 +293,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 020daff42c1ae6a761b1cd5c3d473d65bf8a9cbabe257db66e4af03a242dd93d
+hmac: c68094ac1e1552218366139306f7b0ab9563cd7184442c92dee1ca49237c411d
 
 ...
