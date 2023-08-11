@@ -47,8 +47,8 @@ steps:
       - dryrun
 
   - name: publish-quay
-    image: docker.io/xoxys/drone-docker-buildx:debug
     pull: always
+    image: docker.io/xoxys/drone-docker-buildx:debug
     settings:
       auto_tag: true
       dockerfile:
@@ -82,6 +82,6 @@ trigger:
 
 ---
 kind: signature
-hmac: a8f116a356de9144e9610f3ad2bb66c679d56151ef9b71b91d9bf343c2ff04ef
+hmac: 51143668f10f8403862a46301a3a256c39795f98b0fc10e15aa719325a0fa28f
 
 ...
