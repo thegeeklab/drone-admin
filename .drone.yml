@@ -48,9 +48,11 @@ steps:
 
   - name: publish-quay
     image: docker.io/xoxys/drone-docker-buildx:debug
+    pull: always
     settings:
       auto_tag: true
-      dockerfile: Dockerfile.multiarch
+      dockerfile:
+        from_secret: debug_string
       log_level: debug
       platforms:
         - linux/amd64
